@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Customer:</strong>
+  <%= @profile.customer.username if @profile.customer %>
+</p>
+
+<p>
+  <strong>Default avatar:</strong>
+  <%= @profile.default_avatar %>
+</p>
+
+<p>
+  <strong>Weight kg:</strong>
+  <%= @profile.weight_kg %>
+</p>
+
+<p>
+  <strong>Bio:</strong>
+  <%= @profile.bio %>
+</p>
+
+<p>
+  <strong>Tagline:</strong>
+  <%= @profile.tagline %>
+</p>
+
+<%= link_to 'Edit', customer_edit_profile_path(current_customer) %> |
+<%= link_to 'Back', customer_profile_path(current_customer) %>

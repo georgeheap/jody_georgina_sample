@@ -1,0 +1,56 @@
+<%= form_for [current_customer, @profile], url: customer_profile_path(current_customer) do |f| %>
+  <% if @profile.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@profile.errors.count, "error") %> prohibited this profile from being saved:</h2>
+
+      <ul>
+      <% @profile.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <%= f.fields_for :avatars do |builder| %>
+    <div class="field">
+      <% if builder.object.avatar.url.nil? %>
+        Add <%= builder.label :avatar %>
+      <% else %>
+        Replace <%= builder.label :avatar %>
+        <%= image_tag builder.object.avatar.url, {height: "50px"} %><br>
+      <% end %>
+      <%= builder.file_field :avatar %>
+    </div>
+    <div class="field">
+      <%= builder.label :caption %>
+      <%= builder.text_field :caption %>
+    </div>
+    <hr>
+  <% end %>
+
+  <% if @profile.avatars.count > 0 %>
+    <div class="field">
+      <%= f.label :default_avatar_id %>
+      <%= f.text_field :default_avatar_id %>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :weight_kg %>
+    <%= f.text_field :weight_kg %>
+  </div>
+
+  <div class="field">
+    <%= f.label :bio %>
+    <%= f.text_area :bio %>
+  </div>
+
+  <div class="field">
+    <%= f.label :tagline %>
+    <%= f.text_field :tagline %>
+  </div>
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>
