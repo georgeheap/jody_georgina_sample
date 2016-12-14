@@ -1,3 +1,18 @@
+<style>
+  .avatar {
+    display: table-cell;
+    border: 3px solid black;
+    padding: 5px;
+  }
+  .avatarContainer > .avatar:not(:last-child) {
+    border-right: none;
+  }
+  .center {
+    text-align: center;
+  }
+</style>
+
+
 <%= form_for [current_customer, @profile], url: customer_profile_path(current_customer) do |f| %>
   <% if @profile.errors.any? %>
     <div id="error_explanation">
@@ -11,29 +26,44 @@
     </div>
   <% end %>
 
-  <%= f.fields_for :avatars do |builder| %>
-    <div class="field">
-      <% if builder.object.avatar.url.nil? %>
-        Add <%= builder.label :avatar %>
-      <% else %>
-        Replace <%= builder.label :avatar %>
-        <%= image_tag builder.object.avatar.url, {height: "50px"} %><br>
-      <% end %>
-      <%= builder.file_field :avatar %>
-    </div>
-    <div class="field">
-      <%= builder.label :caption %>
-      <%= builder.text_field :caption %>
-    </div>
-    <hr>
-  <% end %>
+  <div class="avatarContainer">
+    <%= f.fields_for :avatars do |builder| %>
+      <div class="avatar">
+        <div class="field">
+          <% if builder.object.avatar.url.nil? %>
+            Add <%= builder.label :avatar %>
+          <% else %>
+            <%= image_tag builder.object.avatar.url, {height: "50px"} %><br>
+            Replace <%= builder.label :avatar %>
+          <% end %>
+          <%= builder.file_field :avatar %>
+        </div>
+        <div class="field">
+          <%= builder.label :caption %>
+          <%= builder.text_field :caption %>
+        </div>
+      </div>
+    <% end %>
+  </div>
 
-  <% if @profile.avatars.count > 0 %>
-    <div class="field">
+  <div class="avatarContainer">
+    <% if @profile.avatars.count > 0 %>
+      <br>
       <%= f.label :default_avatar_id %>
-      <%= f.text_field :default_avatar_id %>
-    </div>
-  <% end %>
+      <% if @profile.avatars.count > 1 %>
+        <% @profile.avatars.each do |avatar|
+            next if avatar.avatar.url.nil? %>
+          <div class="avatar center">
+            <%= image_tag avatar.avatar.url, {height: "50px"} %><br>
+            <%= f.radio_button :default_avatar_id, avatar.id, value: @profile.default_avatar_id == avatar.id %>
+          </div>
+        <% end %>
+      <% else # Only one, so show them this as being the default %>
+        <%= image_tag @profile.avatars.first.avatar.url, {height: "50px"} %><br>
+      <% end %>
+    <% end %>
+  </div>
+  <br>
 
   <div class="field">
     <%= f.label :weight_kg %>
